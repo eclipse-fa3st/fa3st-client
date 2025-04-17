@@ -1,0 +1,393 @@
+/**
+ * Copyright (c) 2025 the Eclipse FA³ST Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.eclipse.digitaltwin.fa3st.client.interfaces;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.util.List;
+import org.eclipse.digitaltwin.aas4j.v3.model.*;
+import org.eclipse.digitaltwin.fa3st.client.exception.ConnectivityException;
+import org.eclipse.digitaltwin.fa3st.client.exception.StatusCodeException;
+import org.eclipse.digitaltwin.fa3st.client.query.SearchCriteria;
+import org.eclipse.digitaltwin.fa3st.client.util.HttpHelper;
+import org.eclipse.digitaltwin.fa3st.common.exception.InvalidRequestException;
+import org.eclipse.digitaltwin.fa3st.common.model.InMemoryFile;
+import org.eclipse.digitaltwin.fa3st.common.model.TypedInMemoryFile;
+import org.eclipse.digitaltwin.fa3st.common.model.api.modifier.Content;
+import org.eclipse.digitaltwin.fa3st.common.model.api.modifier.OutputModifier;
+import org.eclipse.digitaltwin.fa3st.common.model.api.paging.Page;
+import org.eclipse.digitaltwin.fa3st.common.model.api.paging.PagingInfo;
+import org.eclipse.digitaltwin.fa3st.common.model.http.HttpStatus;
+
+
+/**
+ * Interface for accessing the elements of an Asset Administration Shell (AAS) via a standardized API.
+ * This interface allows operations such as retrieving, updating, and deleting various aspects of the AAS,
+ * including its submodels, asset information, and thumbnails.
+ *
+ * <p>
+ * Communication is handled via HTTP requests to a specified service URI.
+ * </p>
+ */
+public class AASInterface extends BaseInterface {
+
+    /**
+     * Creates a new Asset Administration Shell Interface.
+     *
+     * @param endpoint Uri used to communicate with the FA³ST service
+     * @param httpClient Allows user to specify custom http-client
+     */
+    public AASInterface(URI endpoint, HttpClient httpClient) {
+        super(endpoint, httpClient);
+    }
+
+
+    /**
+     * Creates a new Asset Administration Shell Interface.
+     *
+     * @param endpoint Uri used to communicate with the FA³ST service
+     */
+    public AASInterface(URI endpoint) {
+        super(endpoint);
+    }
+
+
+    /**
+     * Creates a new Asset Administration Shell Interface.
+     *
+     * @param endpoint Uri used to communicate with the FA³ST Service
+     * @param user String to allow for basic authentication
+     * @param password String to allow for basic authentication
+     */
+    public AASInterface(URI endpoint, String user, String password) {
+        super(endpoint, user, password);
+    }
+
+
+    /**
+     * Creates a new Asset Administration Shell Interface.
+     *
+     * @param endpoint Uri used to communicate with the FA³ST service
+     * @param trustAllCertificates Allows user to specify if all certificates (including self-signed) are trusted
+     */
+    public AASInterface(URI endpoint, boolean trustAllCertificates) {
+        super(endpoint, trustAllCertificates ? HttpHelper.newTrustAllCertificatesClient() : HttpHelper.newDefaultClient());
+    }
+
+
+    /**
+     * Retrieves the Asset Administration Shell (AAS) from the server.
+     *
+     * @return The requested Asset Administration Shell object
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public AssetAdministrationShell get() throws StatusCodeException, ConnectivityException {
+        return get(null, OutputModifier.DEFAULT, AssetAdministrationShell.class);
+    }
+
+
+    /**
+     * Replaces the current Asset Administration Shell with a new one.
+     *
+     * @param aas The new Asset Administration Shell object to replace the current one
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void put(AssetAdministrationShell aas) throws StatusCodeException, ConnectivityException {
+        super.put(aas);
+    }
+
+
+    /**
+     * Retrieves the Asset Administration Shell (AAS) as a reference.
+     *
+     * @return The requested Asset Administration Shell reference
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public Reference getAsReference() throws StatusCodeException, ConnectivityException {
+        return get(null, OutputModifier.with(Content.REFERENCE), Reference.class);
+    }
+
+
+    /**
+     * Retrieves the asset information associated with the Asset Administration Shell.
+     *
+     * @return The requested Asset Information object
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public AssetInformation getAssetInformation() throws StatusCodeException, ConnectivityException {
+        return get(assetInfoPath(), OutputModifier.DEFAULT, AssetInformation.class);
+    }
+
+
+    /**
+     * Updates the asset information of the Asset Administration Shell.
+     *
+     * @param assetInfo The new Asset Information object to replace the current one
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void putAssetInformation(AssetInformation assetInfo) throws StatusCodeException, ConnectivityException {
+        put(assetInfoPath(), assetInfo);
+    }
+
+
+    /**
+     * Retrieves the thumbnail image associated with the Asset Administration Shell.
+     *
+     * @return The requested thumbnail as a TypedInMemoryFile object
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public InMemoryFile getThumbnail() throws StatusCodeException, ConnectivityException, InvalidRequestException {
+        return getFile(thumbnailPath());
+    }
+
+
+    /**
+     * Replaces the current thumbnail image of the Asset Administration Shell.
+     *
+     * @param file The new thumbnail file to replace the current one
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void putThumbnail(TypedInMemoryFile file) throws StatusCodeException, ConnectivityException {
+        putFile(thumbnailPath(), file);
+    }
+
+
+    /**
+     * Deletes the current thumbnail image of the Asset Administration Shell.
+     *
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void deleteThumbnail() throws StatusCodeException, ConnectivityException {
+        delete(thumbnailPath(), HttpStatus.OK);
+    }
+
+
+    /**
+     * Retrieves all references to submodels within the Asset Administration Shell.
+     *
+     * @return A list of references to all submodels
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public List<Reference> getAllSubmodelReferences() throws StatusCodeException, ConnectivityException {
+        return getAll(submodelRefPath(), SearchCriteria.DEFAULT, OutputModifier.DEFAULT, Reference.class);
+    }
+
+
+    /**
+     * Retrieves a page of references to submodels.
+     *
+     * @param pagingInfo Metadata for controlling the pagination of results
+     * @return A page of references to submodels
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public Page<Reference> getSubmodelReference(PagingInfo pagingInfo) throws StatusCodeException, ConnectivityException {
+        return getPage(submodelRefPath(), SearchCriteria.DEFAULT, OutputModifier.DEFAULT, pagingInfo, Reference.class);
+    }
+
+
+    /**
+     * Creates a new reference to a submodel within the Asset Administration Shell.
+     *
+     * @param reference The reference to the submodel to be added
+     * @return The created submodel reference
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>409: ConflictException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public Reference postSubmodelReference(Reference reference) throws StatusCodeException, ConnectivityException {
+        return post(submodelRefPath(), reference, Content.NORMAL, Reference.class);
+    }
+
+
+    /**
+     * Deletes a specific submodel reference from the Asset Administration Shell.
+     *
+     * @param submodelId The unique identifier of the submodel to delete
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void deleteSubmodelReference(String submodelId) throws StatusCodeException, ConnectivityException {
+        delete(submodelRefPath() + idPath(submodelId));
+    }
+
+
+    /**
+     * Deletes a specific submodel from the Asset Administration Shell.
+     *
+     * @param submodelId The unique identifier of the submodel to delete
+     * @throws StatusCodeException if the server responds with an error. Possible Exceptions:
+     *             <div>
+     *             <ul>
+     *             <li>400: BadRequestException</li>
+     *             <li>401: UnauthorizedException</li>
+     *             <li>403: ForbiddenException</li>
+     *             <li>404: NotFoundException</li>
+     *             <li>500: InternalServerErrorException</li>
+     *             </ul>
+     *             </div>
+     * @throws ConnectivityException if the connection to the server cannot be established
+     */
+    public void deleteSubmodel(String submodelId) throws StatusCodeException, ConnectivityException {
+        delete(submodelPath() + idPath(submodelId));
+    }
+
+
+    /**
+     * Returns the Submodel Interface for managing the submodel within the AAS.
+     * Although submodels can be managed directly through this interface,
+     * it is recommended to use the Submodel Repository Interface.
+     *
+     * @param submodelId The unique identifier of the submodel to retrieve
+     * @return The SubmodelInterface object for interacting with the specified submodel
+     */
+    public SubmodelInterface getSubmodelInterface(String submodelId) {
+        return new SubmodelInterface(resolve(idPath(submodelId)));
+    }
+
+
+    private static String assetInfoPath() {
+        return "/asset-information";
+    }
+
+
+    private static String submodelRefPath() {
+        return "/submodel-refs";
+    }
+
+
+    private static String submodelPath() {
+        return "/submodels";
+    }
+
+
+    private static String thumbnailPath() {
+        return assetInfoPath() + "/thumbnail";
+    }
+
+}

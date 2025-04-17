@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.eclipse.digitaltwin.fa3st</groupId>
+        <artifactId>fa3st-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <groupId>org.eclipse.digitaltwin.fa3st.client</groupId>
+    <artifactId>fa3st-client</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>FA³ST Client</name>
+    <description>A user client for the AAS API</description>
+    <url>https://github.com/eclipse-fa3st/fa3st-client</url>
+    <inceptionYear>2025</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Maximilian Kühn</name>
+            <email>maximilian.kuehn@iosb.fraunhofer.de</email>
+            <organization>Fraunhofer IOSB</organization>
+            <organizationUrl>https://www.iosb.fraunhofer.de</organizationUrl>
+        </developer>
+        <developer>
+            <name>Michael Jacoby</name>
+            <email>michael.jacoby@iosb.fraunhofer.de</email>
+            <organization>Fraunhofer IOSB</organization>
+            <organizationUrl>https://www.iosb.fraunhofer.de</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-fa3st/fa3st-client.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-fa3st/fa3st-client.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/eclipse-fa3st/fa3st-client/tree/main</url>
+    </scm>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/eclipse-fa3st/fa3st-client/issues</url>
+    </issueManagement>
+    <properties></properties>
+    <dependencies>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.digitaltwin.aas4j</groupId>
+            <artifactId>aas4j-dataformat-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.digitaltwin.aas4j</groupId>
+            <artifactId>aas4j-dataformat-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.digitaltwin.fa3st</groupId>
+            <artifactId>fa3st-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-jetty12</artifactId>
+        </dependency>
+    </dependencies>
+</project>
