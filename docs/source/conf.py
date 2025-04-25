@@ -35,7 +35,7 @@ html_theme_options = {
 	"logo_only": True
 }
 
-html_logo = 'images/logo-positiv.png'
+html_logo = 'images/logo-positive.png'
 html_show_sphinx = False
 html_show_sourcelink  = False
 
