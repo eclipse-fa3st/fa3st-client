@@ -1,12 +1,10 @@
-name: Build
+name: Build Pull Request
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - "*"
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,8 +13,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source
+
+    # Checkout the base repository's code
+    - name: Checkout base repository
       uses: actions/checkout@v4
+
+    # Explicitly check out the pull request's head branch
+    - name: Checkout pull request code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
 
     - name: Cache maven repository
       uses: actions/cache@v4
@@ -37,4 +44,4 @@ jobs:
 
     - name: Build with Maven
       run: |
-        mvn verify -B
+        mvn verify -P ci -B
