@@ -70,3 +70,4 @@ Distributed under the Apache 2.0 License. See `LICENSE` for more information.
 Copyright (C) 2025 the Eclipse FA³ST Authors.
 
 You should have received a copy of the Apache 2.0 License along with this program. If not, see https://www.apache.org/licenses/LICENSE-2.0.html.
+a
